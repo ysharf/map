@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Web Pentest Roadmap + Prompts</title>
+<style>
+:root{--bg:#fafaf8;--card:#fff;--tx:#1d1d1b;--mut:#6b6b66;--bd:#e4e4de;--ac:#0f766e;--ac2:#e6f4f1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--card:#1e1e1c;--tx:#ececE6;--mut:#9a9a92;--bd:#33332f;--ac:#4fd1c0;--ac2:#1b2b29;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141413;--card:#1e1e1c;--tx:#ececE6;--mut:#9a9a92;--bd:#33332f;--ac:#4fd1c0;--ac2:#1b2b29;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.7 system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+main{max-width:820px;margin:0 auto;padding:20px 14px 60px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1}
+button{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--ac)}
+button.on,button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+button.del{color:#c0392b}
+textarea,input{font:inherit;width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;direction:rtl}
+textarea{font-size:13px;line-height:1.6;resize:vertical}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;direction:ltr;text-align:left}
+label{display:block;font-size:12px;color:var(--mut);margin:10px 0 3px}
+details>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px}
+details>summary::-webkit-details-marker{display:none}
+.num{background:var(--ac2);color:var(--ac);border-radius:8px;padding:1px 9px;font-weight:600;font-size:13px}
+.hrs{margin-inline-start:auto;color:var(--mut);font-size:13px;white-space:nowrap}
+.ttl{font-weight:600;flex:1}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stat{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.stat b{color:var(--tx)}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:7px 16px;border-radius:20px;font-size:13px;opacity:0;transition:.2s;pointer-events:none}
+.toast.s{opacity:1}
+.hide{display:none}
+.ls{display:flex;gap:6px;margin-bottom:6px;align-items:center}
+.ls input{min-width:0}
+.ls input.h{width:68px;flex:none;text-align:center}
+.ls button{flex:none;padding:6px 10px}
+.ls+button,details>div>button{margin-top:2px}
+input,textarea{text-align:start}
+</style>
+</head>
+<body>
+<main>
+<h1>Web Pentest Roadmap</h1>
+
+<div class="sub" id="stat" style="margin:0 0 14px"></div>
+
+<section id="v1">
+  <div id="phases"></div>
+  <button class="pri" id="addP">+ إضافة مرحلة</button>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY="wapt-v5";
+const D=[
+["Scope والإعداد والأخلاقيات",
+`Written authorization وscope وexclusions وRoE | 1
+إعداد PortSwigger Academy وJuice Shop أو WebGoat | 1
+Browser profile منفصل وBurp Community وفولدر notes | 1
+قالب finding (request/response, evidence, impact, remediation) | 1`,
+`أشرح scope سيناريو مكتوب وأحدد فيه 3 فخاخ، أعيد finding واحد في lab، وأحفظ evidence بدون بيانات حساسة.`,
+`فرق الإذن المكتوب عن الشفهي، محتوى الـ RoE (الأصول، الأوقات، الممنوعات، التواصل، التعامل مع critical)، خطوات التركيب الفعلية (Docker/Node، Firefox profile، هيكل notes)، وإزاي أعمل redaction للـ evidence. ابني معي قالب finding واديني مثال كامل وتاني ناقص عشان أتعلم الفرق.`],
+["Web Fundamentals & HTTP",
+`URL وDNS وports وTCP/TLS | 5
+HTTP methods وstatus وheaders وbody وredirects وContent-Type | 8
+Cookies وsessions وAuthorization وtokens | 5
+SOP وCORS وCSRF وCSP وcookie attributes | 5
+Forms وJSON وREST وعلاقة التطبيق بالـ DB | 4
+DevTools وتتبع request كامل | 3`,
+`أقرأ 3 requests/responses وأحدد الـ inputs والأخطاء الأمنية فيها، أرسم diagram لـ login كامل، وأشرح الفرق بين SOP وCORS وCSRF بدون مراجعة.`,
+`اشرح بـ raw HTTP/1.1 وبعدين فرق HTTP/2. TLS handshake خطوة بخطوة وليه Burp محتاج CA. session مقابل JWT، ومين بيحدد إن cookie تتبعت. SOP vs CORS (simple vs preflight). في كل درس حدد لي الـ user-controlled inputs واطلب مني أشغل curl -v أو DevTools. مصادر: MDN وRFC 9110.`],
+["Linux & Networking (بالتوازي مع مرحلة 1)",
+`Terminal navigation | 5
+grep وfind وhead وtail وsort وcut وwc | 4
+IP وDNS وports وTCP/UDP وTLS وProxy vs VPN | 5
+curl | 3
+Permissions وprocesses وenv vars | 2
+Minimal Bash | 1`,
+`أنفذ 5 مهام عملية بنفسي: تحليل access.log بـ grep/sort/uniq، تشخيص مشكلة DNS أو port أو TLS، وفحص headers بـ curl مع cookies وproxy.`,
+`النمط: اشرح الأمر، اديني تمرين بـ expected output، أجرب وأرجعلك. اعمل لي sample access.log. curl بعمق (-v -i -H -d -b -c -L --proxy، ومخاطر -k). أدوات تشخيص: dig وss وopenssl s_client وقراءة الـ output.`],
+["HTML, JavaScript & Browser Analysis (JS من الصفر)",
+`HTML forms وclient vs server validation | 5
+JavaScript essentials | 20
+DOM وevents وfetch وasync/await وstorage وcookies | 10
+قراءة front-end code وSource Maps وsources/sinks | 8`,
+`أكتب صفحة form + fetch صغيرة، أتتبع قيمة من الـ URL لحد sink في تطبيق تدريبي، أجد 3 sinks في كود تديهولي، وأتجاوز client-side validation بـ DevTools.`,
+`افترض إني بدأت JS من الصفر: كل مفهوم بمثال في Console وتمرين بعده. ركّز على DOM وevents وfetch وإزاي المتصفح بيعمل parsing للـ HTML. Sources/sinks (location.hash, postMessage → innerHTML, eval, document.write). فرق textContent وinnerHTML. إزاي أقرأ minified code وألاقي endpoints مخفية في JS bundle.`],
+["Python, HTTP Automation & DB Basics (بالتوازي مع مرحلة 3)",
+`Python لسكريبتات الاختبار: requests وSession وJSON وfile I/O وexceptions وtimeouts | 18
+SQL وNoSQL concepts | 4`,
+`أكتب من الصفر 3 سكريبتات: login + طلب صفحة، مقارنة responses لـ IDs مختلفة في lab، وhandling للفشل مع timeout وdelay. وأكتب query آمنة بـ parameterized في SQLite.`,
+`مش دورة Python عامة: اللي بيخدم HTTP automation بس. كل درس بمشروع صغير وراجع كودي سطر بسطر (timeout ناقص، secrets مكتوبة في الكود، verify=False). ابني معي SQLite محلي (SELECT/WHERE/JOIN/UNION) ووريني إزاي string concatenation بتتكسر وبعدها parameterized. NoSQL: operators زي $ne/$gt. كل السكريبتات على lab أو localhost فقط.`],
+["Burp Suite & أدوات مساعدة",
+`Install وProxy وscope | 5
+HTTP history وintercept وRepeater | 5
+Decoder وComparer وIntruder basics | 4
+Site map وتسجيل inputs وroles وendpoints | 3
+حفظ evidence وreset للـ lab | 3
+ffuf وPostman وفهم sqlmap كأداة (على labs فقط) | 4`,
+`ألتقط request وأغيّر متغير واحد وأقارن وأفسّر في 5 labs مختلفة، أبني site map لتطبيق تدريبي، وأستخدم ffuf وPostman على lab محلي.`,
+`إعداد دقيق (listener, CA, extension للمتصفح، مشاكل HTTPS). وضّح بالظبط الموجود والمقيّد في Community وقول لو مش متأكد. منهجية Repeater: hypothesis قبل كل طلب، متغير واحد، قارن status/length/body/timing. sqlmap تعلمه كأداة بعد ما أفهم SQLi يدوي، مش بديل عنه. ابني معي site map template.`],
+["Methodology & Reconnaissance",
+`تحويل الـ scope لقائمة assets | 2
+Passive discovery | 4
+Map user journeys وroles وendpoints وAPI routes | 6
+Error messages وheaders وconfig وbusiness workflows | 4
+OWASP WSTG كـ checklist | 4`,
+`أنتج application map وWSTG tracking sheet (Tested/Untested/N/A) لتطبيق تدريبي فيه 20+ اختبار مصنّفين، بدون أي scanning خارج النطاق.`,
+`اشرح تقسيم WSTG (INFO, CONF, IDNT, ATHN, ATHZ, SESS, INPV, ERRH, CRYP, BUSL, CLNT, APIT) بالـ IDs، وقول لو مش متأكد من رقم. فرق passive وactive. أمثلة leakage (Server, X-Powered-By, stack traces). حلل workflows (checkout, reset, invite) وافتراضات المطور. ابني معي tracking sheet.`],
+["Core Web Vulnerabilities (أهم مرحلة)",
+`Access Control وIDOR وBOLA | 14
+Authentication & Sessions | 14
+SQL Injection وNoSQL Injection | 18
+XSS (reflected, stored, DOM) | 15
+CSRF وCORS وClickjacking وCSP | 10
+Path Traversal وFile Upload | 10
+SSRF | 10
+XXE وSSTI وOS Command Injection | 14
+Business Logic وRace Conditions | 10
+Information Disclosure وMisconfiguration | 5
+مراجعة متباعدة (Anki + إعادة labs قديمة) | 6`,
+`لكل فئة: أحل 8 labs من PortSwigger (3 Practitioner على الأقل) بدون solution، أكتب finding كامل واحد، وأنجح في اختبار 5 أسئلة بنسبة 80% أو أكتر. لو فئة ضعيفة ارجعني لها قبل ما نكمل.`,
+`قسّم كل موضوع لـ 3-5 دروس فرعية: root cause بكود vulnerable وfixed، تصنيف CWE وWSTG، منهجية اختبار non-destructive، ترتيب labs من Apprentice لـ Expert (أسماء الأقسام بس، متخترعش lab names)، ليه الـ filters بتفشل، الإصلاح الصح، وfinding لكل lab. قبل أي موضوع جديد اسألني 3 أسئلة من القديم. على labs فقط.`],
+["API & GraphQL Security Testing",
+`Map REST endpoints وverbs وschemas وJSON | 4
+BOLA وBFLA وobject-property authorization وMass Assignment | 7
+API authentication وtokens وresource limits | 5
+GraphQL: schemas وintrospection وauthorization وquery limits | 5
+OWASP API Top 10 (2023) كـ checklist | 4`,
+`أختبر API تدريبي بـ 3 أدوار وأوثّق 3 authorization failures (BOLA/BFLA/Mass Assignment)، أحل 5 labs في API/GraphQL، وأكمل checklist الـ API Top 10 بسؤال اختبار وremediation لكل بند.`,
+`فرق BOLA وBOPLA وBFLA بـ requests حقيقية. Mass Assignment بمثال كود. استخدم Postman/Burp مع OpenAPI spec ومتغيرات tokens لكل user. GraphQL: aliases وbatching وdepth limits وauthorization على مستوى resolver. بيئات تدريب (DVGA, crAPI, VAmPI): تأكد من اسم وحالة كل واحدة قبل ما تقترحها.`],
+["Advanced Web Vulnerabilities",
+`OAuth 2.0 وOIDC وJWT | 5
+WebSockets | 4
+HTTP Request Smuggling وHost Header | 8
+Web Cache Poisoning وDeception | 6
+Prototype Pollution وInsecure Deserialization | 7
+Advanced Race Conditions | 4
+OAST concepts | 4
+Mixed advanced-lab review | 2`,
+`شرط الدخول: أنجح في اختبار تشخيصي 80%+ في access control وauth وinjection. شرط الخروج: أحل 2 lab Practitioner على الأقل من كل موضوع بدون solution وأشرح كل واحدة، مع hypothesis ← test ← نتيجة.`,
+`ابدأ باختبار تشخيصي من 5 أسئلة ورجّعني للمرحلة 7 لو في ضعف. OAuth flows برسم تسلسلي (redirect_uri, state, PKCE). JWT: أخطاء الـ validation. Smuggling: ابدأ بـ CL vs TE ومعمارية front/back بصور ASCII وخدها ببطء. Deserialization: لغة واحدة بعمق. OAST: وضّح لو Collaborator محتاج Pro. قارن المواضيع بـ exam topics الخاصة بـ BSCP.`],
+["Full Assessment, Reporting & Portfolio",
+`تخطيط assessment كامل بتغطية WSTG | 5
+تقييم Juice Shop أو WebGoat محلياً | 12
+كتابة 2-3 تقارير | 8
+تحليل 10-15 تقرير عام | 5
+Retest وsanitize وportfolio | 5
+BSCP-style mock exams | 8`,
+`أنفذ assessment كامل لتطبيق تدريبي، وأكتب تقرير يقدر شخص تاني يكرره، وأحل mock exam واحد على الأقل بنفس زمن الامتحان الحقيقي.`,
+`خلينا نحاكي عميل حقيقي: أنا أنفذ وإنت lead بيسألني "إيه الدليل؟" و"ده vulnerability ولا behavior مقصود؟". قيّم تقريري بـ rubric (وضوح، قابلية التكرار، دقة severity، جودة remediation). اشرح CVSS ومتى يكون مبالغ. قواعد sanitization للـ portfolio. وخطة بعد الرود ماب (شهادات، bug bounty مسؤول، تخصص).`]
+];
+
+const $=id=>document.getElementById(id);
+const hrs=p=>p.L.reduce((s,x)=>s+(+x.h||0),0);
+const genOld=(p,i)=>{const L=p.L.filter(x=>x.n.trim()).map(x=>"- "+x.n+" ("+x.h+" ساعة)").join("\n");
+return `المرحلة ${i}: ${p.t} (${hrs(p)} ساعة)\n\nالدروس:\n${L}\n\nركّز على:\n${p.f}\n\nPhase Gate (لازم أعدّيه قبل ما أكمل):\n${p.g}\n\nالتزم بقالب الشرح في البرومت الأساسي. ابدأ بسؤالي عن مستواي في المتطلبات، وفي الآخر اختبرني على الـ Gate وقولي "عدّيت" أو "لسه" بالأسباب.`};
+const INTRO=`أنت مدرّس متخصص في Web Application Penetration Testing. هدفك أن أفهم الدرس وأطبّقه بنفسي، لا أن أحفظ تعريفات أو أتلقى إجابات جاهزة.`;
+const RULES=`اشرح بالعربية الواضحة مع المصطلحات التقنية بالإنجليزية، وعرّف الاختصار عند أول ظهور. افترض أنني مبتدئ فيما لم أدرسه، ولا تكرر ما أعرفه.
+ابدأ بحدود الدرس، وأهداف قابلة للقياس، والمتطلبات السابقة، ثم اختبار تشخيصي من 3–5 أسئلة دون كشف إجاباتها قبل محاولتي.
+اشرح من الأساس إلى التفاصيل خطوة بخطوة: كيف تعمل الفكرة، لماذا تهم مختبر الاختراق، المصطلحات، مثال طبيعي ثم مثال أمني تدريبي. لا تستخدم تشبيهًا يضلل عن الحقيقة التقنية.
+استخدم أمثلة واقعية البنية لكنها اصطناعية وآمنة. اشرح كل سطر أو حقل أو خيار مهم، وشكل المخرجات المتوقعة، وما يمكن وما لا يمكن استنتاجه منها.
+اذكر الـ edge cases والأخطاء الشائعة وكيف أميّز النتيجة الصحيحة من false positive، مع جدول صغير للمفاهيم المتشابهة عند الحاجة.
+أضف قسم «أهم الحيل والنقاط التي لا يصح تفويتها»: الحيل الفنية المهمة، شروط نجاحها، حدودها، ومتى لا تنطبق.
+أعطني تطبيقًا محلولًا، ثم تمارين: مبتدئ، متوسط، تحدٍّ. لكل تمرين: الهدف، البيئة، المطلوب، معيار النجاح، وما أسجله في الملاحظات. لا تعرض حل تمرين غير محلول؛ أعطني تلميحات تدريجية فقط عند طلبي، بعد 20–30 دقيقة محاولة.
+اختم باختبار من 8–12 سؤالًا، وسيناريو مختبر، وChecklist إتقان، دون مفتاح الإجابات؛ وصحّح إجاباتي مع سبب كل منها.
+ثم ملخص مراجعة، وقائمة مصطلحات، و5 Flashcards، وواجب عملي، وما يجب أن أقدر عليه قبل الدرس التالي.
+المصادر: روابط فعلية لوثائق رسمية فقط، وميّز بين المعلومة الموثقة ومثالك. لا تخترع روابط أو اقتباسات أو إصدارات، وإن لم تتحقق من شيء فقل ذلك.
+قسّم الدرس الواسع إلى أجزاء مرقمة. اشرح هذا الدرس فقط، لا المرحلة كلها.`;
+const END=`إذا كانت خانة اسم الدرس فارغة فلا تخمّن؛ اعرض دروس المرحلة واطلب مني اختيار واحد.
+التطبيق العملي على labs أو أنظمة لدي إذن مكتوب بها فقط.`;
+const gen=(p,i)=>{const L=p.L.filter(x=>x.n.trim()).map(x=>"- "+x.n).join("\n");
+return "اسم الدرس المطلوب شرحه الآن: \n"+INTRO+"\nالمرحلة: "+i+" — "+p.t+"\nدروس المرحلة:\n"+L+"\nقواعد الشرح:\n"+RULES+"\nتركيز هذه المرحلة:\n"+p.f+"\nمعيار اجتياز المرحلة: "+p.g+"\n"+END};
+const fresh=()=>({p:D.map((d,i)=>{const o={t:d[0],L:d[1].split("\n").map(x=>{const m=x.match(/^(.*?)\s*\|\s*([\d.]+)\s*$/);return {n:m[1],h:+m[2]}}),g:d[2],f:d[3]};o.pr=gen(o,i);return o})});
+let S;
+try{const r=localStorage.getItem(KEY);S=r?JSON.parse(r):fresh()}catch(e){S=fresh()}
+let tm;const save=()=>{clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},300)};
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("s");setTimeout(()=>t.classList.remove("s"),1400)}
+function copy(txt){const ok=()=>toast("اتنسخ ✓");
+if(navigator.clipboard)navigator.clipboard.writeText(txt).then(ok,()=>fb());else fb();
+function fb(){const a=document.createElement("textarea");a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){toast("انسخ يدوي")}a.remove()}}
+function stats(){$("stat").textContent="الإجمالي: "+S.p.reduce((a,p)=>a+hrs(p),0)+" ساعة"}
+function field(lbl,val,rows,cb,cls){const w=document.createElement("div");const l=document.createElement("label");l.textContent=lbl;const t=document.createElement("textarea");t.rows=rows;t.value=val;if(cls)t.className=cls;t.oninput=()=>{cb(t.value);save()};w.append(l,t);return [w,t]}
+function render(){const box=$("phases");box.innerHTML="";
+S.p.forEach((p,i)=>{const c=document.createElement("details");c.className="card";
+const s=document.createElement("summary");s.innerHTML=`<span class="num">${i}</span><span class="ttl"></span><span class="hrs"></span>`;
+const ttl=s.querySelector(".ttl"),hh=s.querySelector(".hrs");ttl.textContent=p.t;hh.textContent=hrs(p)+" ساعة";c.append(s);
+const ti=document.createElement("input");ti.value=p.t;ti.oninput=()=>{p.t=ti.value;ttl.textContent=p.t;save()};
+const lt=document.createElement("label");lt.textContent="اسم المرحلة";c.append(lt,ti);
+const lw=document.createElement("div");const ll=document.createElement("label");ll.textContent="الدروس والساعات";lw.append(ll);const lb=document.createElement("div");lw.append(lb);
+const upd=()=>{hh.textContent=hrs(p)+" ساعة";stats();save()};
+const drawL=()=>{lb.innerHTML="";p.L.forEach((x,k)=>{const r=document.createElement("div");r.className="ls";const n=document.createElement("input");n.value=x.n;n.placeholder="اسم الدرس";n.oninput=()=>{x.n=n.value;save()};const h=document.createElement("input");h.className="h";h.type="number";h.min=0;h.step=0.5;h.value=x.h;h.title="ساعات";h.oninput=()=>{x.h=+h.value||0;upd()};const cp=document.createElement("button");cp.textContent="نسخ";cp.onclick=()=>{const q=p.pr,j=q.indexOf("\n");copy("اسم الدرس المطلوب شرحه الآن: "+x.n+(j<0?"":q.slice(j)))};const d=document.createElement("button");d.className="del";d.textContent="✕";d.onclick=()=>{p.L.splice(k,1);drawL();upd()};r.append(n,h,cp,d);lb.append(r)})};
+drawL();const al=document.createElement("button");al.textContent="+ درس";al.onclick=()=>{p.L.push({n:"",h:1});drawL();upd()};lw.append(al);c.append(lw);
+c.append(field("Phase Gate",p.g,3,v=>p.g=v)[0]);
+c.append(field("ركّز على",p.f,5,v=>p.f=v)[0]);
+const [wp,tp]=field("البرومت (اكتب اسم الدرس في أول سطر)",p.pr,18,v=>p.pr=v);c.append(wp);
+const r=document.createElement("div");r.className="row";
+const b1=document.createElement("button");b1.className="pri";b1.textContent="نسخ";b1.onclick=()=>copy(tp.value);
+const b3=document.createElement("button");b3.textContent="تحديث من الحقول";b3.onclick=()=>{p.pr=gen(p,i);tp.value=p.pr;save();toast("اتولّد")};
+const b6=document.createElement("button");b6.className="del";b6.textContent="حذف";b6.onclick=()=>{if(confirm("حذف المرحلة؟")){S.p.splice(i,1);save();render()}};
+r.append(b1,b3,b6);c.append(r);box.append(c)});stats()}
+$("addP").onclick=()=>{const o={t:"مرحلة جديدة",L:[{n:"درس 1",h:2}],g:"معيار الإنجاز هنا",f:"نقاط التركيز هنا"};o.pr=gen(o,S.p.length);S.p.push(o);save();render();document.querySelector("#phases details:last-child").open=true};
+render();
+</script>
+</body>
+</html>
